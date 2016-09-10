@@ -9,7 +9,7 @@ class pico_placa_predictor(object):
 
     def predictor(self, licence_plate_number, date, time):
         '''
-        This function predict if a car have a restriction because "pico y placa"
+        This function predict if a car can be in a road because "pico y placa"
         :param licence_plate_number: license plate number (the full number, not the last digit)
         :param date: the date to verify example: 23/07/2016
         :param time: the time to verify example: 18:20
@@ -28,24 +28,24 @@ class pico_placa_predictor(object):
         if digit_plate in self._picoplaca_day_digit[week_day]:
             for interval in self._picoplaca_interval:
                 if time >= interval[0] and time <= interval[1]:
-                    return True
+                    return False
         
-        return False
+        return True
         
 class TestPicoPlaca(unittest.TestCase):
 
 
     def test_workday(self):
         test = pico_placa_predictor()
-        self.assertTrue(test.predictor('ABC-7776', '7/09/2016', '9:00'))
-        self.assertFalse(test.predictor('ABC-7770', '8/09/2016', '17:00'))
-        self.assertTrue(test.predictor('ABC-7771', '5/09/2016', '18:40'))
-        self.assertFalse(test.predictor('ABC-7775', '28/09/2016', '15:00'))
+        self.assertFalse(test.predictor('ABC-7776', '7/09/2016', '9:00'))
+        self.assertTrue(test.predictor('ABC-7770', '8/09/2016', '17:00'))
+        self.assertFalse(test.predictor('ABC-7771', '5/09/2016', '18:40'))
+        self.assertTrue(test.predictor('ABC-7775', '28/09/2016', '15:00'))
 
     def test_weekend(self):
         test = pico_placa_predictor()
-        self.assertFalse(test.predictor('ABC-7772', '10/09/2016', '7:00'))
-        self.assertFalse(test.predictor('ABC-7779', '11/09/2016', '14:00'))
+        self.assertTrue(test.predictor('ABC-7772', '10/09/2016', '7:00'))
+        self.assertTrue(test.predictor('ABC-7779', '11/09/2016', '14:00'))
 
 if __name__ == '__main__':
     unittest.main()
