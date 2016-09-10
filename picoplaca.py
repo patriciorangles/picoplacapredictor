@@ -1,4 +1,5 @@
 import unittest
+import re
 from datetime import datetime
 
 class pico_placa_predictor(object):
@@ -13,6 +14,13 @@ class pico_placa_predictor(object):
         :param date: the date to verify example: 23/07/2016
         :param time: the time to verify example: 18:20
         '''
+        #license plate number must be CCC-XXXX, C is a character, X is a number
+        assert re.match('^[a-zA-Z]{3}-[\d]{4}$', licence_plate_number)
+        #date must be a valid date whit the format DD/MM/YYYY
+        assert re.match('^[\d]{1,2}/[\d]{1,2}/[\d]{4}$', date)
+        #time must be a valid time whit the format HH:MM
+        assert re.match('^[\d]{1,2}:[\d]{1,2}$', time)
+        
         date_time_obj = datetime.strptime(date + time, '%d/%m/%Y%H:%M')
         week_day = date_time_obj.weekday()        
         digit_plate = int(licence_plate_number[7:8])
@@ -38,7 +46,6 @@ class TestPicoPlaca(unittest.TestCase):
         test = pico_placa_predictor()
         self.assertFalse(test.predictor('ABC-7772', '10/09/2016', '7:00'))
         self.assertFalse(test.predictor('ABC-7779', '11/09/2016', '14:00'))
-
 
 if __name__ == '__main__':
     unittest.main()
